@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServices {
@@ -80,18 +81,17 @@ public class StudentServices {
 
         if(email != null && email.length() > 0 && !email.equalsIgnoreCase(studentEntity.getEmail())) {
 
-            for(StudentEntity student : studentRepository.findByEmail(email)) {
-                if(student.getEmail().equalsIgnoreCase(email)){
-                    throw new IllegalArgumentException("This email is taken guess great minds think alike");
-                }
-            };
-////               Optional<StudentEntity> studentEntityOptional = Optional.ofNullable(studentRepository.findStudentByEmail(email));
-//
-               }
+            boolean empty = studentRepository.findByEmail(email).stream().filter((studEnt) -> studEnt.getEmail().equalsIgnoreCase(email)).collect(Collectors.toList()).isEmpty();
 
+            if(!empty) {
+                throw new IllegalArgumentException("the email you selected already exists");
+            }
 
             studentEntity.setEmail(email);
             logger.info("the email has been successfully updated from " + studentEntity.getEmail() + " to " + email);
+               }
+
+            studentRepository.save(studentEntity);
 
         }
 

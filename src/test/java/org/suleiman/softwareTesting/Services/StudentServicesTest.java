@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
@@ -17,11 +18,13 @@ import org.suleiman.softwareTesting.Repositories.StudentRepository;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StudentServicesTest {
@@ -137,6 +140,7 @@ Logger logger = LoggerFactory.getLogger(StudentServicesTest.class.getName());
 
      // when
         given(studentRepository.existsById(student.getId())).willReturn(true);
+        Mockito.when(studentRepository.findStudentById(student.getId())).thenReturn(student);
       studentServices.updateStudentRecord(student.getId(),"jamila1@gmail.com","jamila udhayfha");
 
     // then
@@ -144,6 +148,48 @@ Logger logger = LoggerFactory.getLogger(StudentServicesTest.class.getName());
     assertThat(student.getName()).isEqualTo("jamila udhayfha");
     }
 
+    @Test
+    void testToCheckIfEmailAlreadyExists() {
+        // given
+        StudentEntity student = getStudent();
+
+
+        // when
+        given(studentRepository.existsById(student.getId())).willReturn(true);
+        Mockito.when(studentRepository.findStudentById(student.getId())).thenReturn(student);
+        studentServices.updateStudentRecord(student.getId(),"jamila@gmail.com","jamila udhayfha");
+
+
+        // then
+        assertThatThrownBy(() -> studentServices.updateStudentRecord(student.getId(),student.getEmail(),"jamila udhayfha")).hasMessageContaining("the email you selected already exists");
+    }
+
+    @Test
+    void successfulDeleteStudentById() {
+      // given
+        StudentEntity student = getStudent();
+        studentRepository.save(student);
+        // when
+        given(studentRepository.existsById(student.getId())).willReturn(true);
+        studentServices.deleteStudentById(student.getId());
+
+        // then
+        verify(studentRepository).deleteById(student.getId());
+
+    }
+
+    @Test
+    void exceptionFromGetStudentById() {
+      // given
+        StudentEntity student = getStudent();
+        studentRepository.save(student);
+
+        // when
+        given(studentRepository.existsById(student.getId())).willReturn(false);
+
+        // then
+        assertThatThrownBy(() -> studentServices.deleteStudentById(student.getId())).hasMessageContaining("the student id is not valid");
+    }
     @Test
     void testForExceptionInUpdateStudentRecord() {
       //given
