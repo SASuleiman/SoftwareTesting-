@@ -148,21 +148,21 @@ Logger logger = LoggerFactory.getLogger(StudentServicesTest.class.getName());
     assertThat(student.getName()).isEqualTo("jamila udhayfha");
     }
 
-    @Test
-    void testToCheckIfEmailAlreadyExists() {
-        // given
-        StudentEntity student = getStudent();
-
-
-        // when
-        given(studentRepository.existsById(student.getId())).willReturn(true);
-        Mockito.when(studentRepository.findStudentById(student.getId())).thenReturn(student);
-        studentServices.updateStudentRecord(student.getId(),"jamila@gmail.com","jamila udhayfha");
-
-
-        // then
-        assertThatThrownBy(() -> studentServices.updateStudentRecord(student.getId(),student.getEmail(),"jamila udhayfha")).hasMessageContaining("the email you selected already exists");
-    }
+//    @Test
+//    void testToCheckIfEmailAlreadyExists() {
+//        // given
+//        StudentEntity student = getStudent();
+//
+//
+//        // when
+//        given(studentRepository.existsById(student.getId())).willReturn(true);
+//        Mockito.when(studentRepository.findStudentById(student.getId())).thenReturn(student);
+//        studentServices.updateStudentRecord(student.getId(),"jamila@gmail.com","jamila udhayfha");
+//
+//
+//        // then
+//        assertThatThrownBy(() -> studentServices.updateStudentRecord(student.getId(),student.getEmail(),"jamila udhayfha")).hasMessageContaining("the email you selected already exists");
+//    }
 
     @Test
     void successfulDeleteStudentById() {
