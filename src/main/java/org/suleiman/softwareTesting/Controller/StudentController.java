@@ -21,7 +21,7 @@ public class StudentController {
     @GetMapping(value = "/getStudents")
     public List<StudentEntity> getStudents() {
         return services.listAllStudent();
-    }
+    } 
 
     @GetMapping(value = "/getStudentByDepartment/{department}")
     public List<StudentEntity> findByDepartment(@PathVariable String department) {

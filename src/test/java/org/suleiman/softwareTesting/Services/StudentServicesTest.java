@@ -22,7 +22,9 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -203,6 +205,18 @@ Logger logger = LoggerFactory.getLogger(StudentServicesTest.class.getName());
         assertThatThrownBy(()-> studentServices.updateStudentRecord(student.getId(),student.getEmail(),student.getName())).hasMessageContaining("the student Id entered does not exists");
     }
 
+    @Test
+    public void testing() {
+      // given
+      String expected = "testing testing 123";
+      String acutal = studentServices.testing();
+
+      // performing the assertions
+      assertEquals(expected,acutal);
+
+
+        
+    }
 
   private StudentEntity getStudent() {
     StudentEntity student = new StudentEntity();
@@ -213,4 +227,6 @@ Logger logger = LoggerFactory.getLogger(StudentServicesTest.class.getName());
     student.setDepartment("MLS");
     return  student;
   }
+
+
 }
